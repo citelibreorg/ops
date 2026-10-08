@@ -35,13 +35,16 @@ CiteLibre is split into three repositories:
 | Bundlebee Maven plugin configuration
 
 | `bundlebee/manifest.json`, `bundlebee/manifests/`
-| Bundlebee manifests: the `citelibre` alveolus deploys the namespace, the shared platform and the applications
+| Bundlebee manifests: the `citelibre` alveolus deploys the namespace, the shared platform (`platform.json`) and the applications (`applications.json`)
 
 | `bundlebee/kubernetes/`
-| Kubernetes descriptors (namespace, application and database templates, platform components)
+| Kubernetes descriptors: namespace, templates (application, database, database init job), platform components, applications, ingress
+
+| `bundlebee/resources/`
+| Files injected in the descriptors: database init script and SQL files (one folder per database), Keycloak theme
 
 | `bundlebee/environments/default.properties`
-| Default placeholder values
+| Default placeholder values (local development values)
 
 | `bundlebee/placeholders.descriptions.properties`
 | Description of each placeholder
@@ -50,9 +53,19 @@ CiteLibre is split into three repositories:
 | Minikube helper scripts
 |===
 
+== 🧱 What is deployed
+
+* **Platform**: MariaDB (shared by all databases), Elasticsearch, Solr and Keycloak (realms `citelibre_backoffice` / `citelibre_frontoffice`, CiteLibre login theme).
+* **Applications**: CiteLibre RendezVous.
+* **Ingress**: a single entry point serving `/keycloak` and `/citelibre-rendezvous`, like the httpd of the demo.
+
+Each database (`keycloak`, `rendezvous`) is created by a Job that imports the SQL files of `bundlebee/resources/sql/<name>/`. The Job is idempotent (it does nothing when the database already exists), so redeploying is safe. To reset a database, drop it and redeploy.
+
+The SQL files and the Keycloak theme are copies of the https://github.com/citelibreorg/demo[demo] ones: keep them in sync when the demo data set changes.
+
 == 🔧 Getting Started
 
-Pre-requisite: Apache Maven >= 3.6.3, Java >= 17 and a Kubernetes cluster reachable through your current kube context.
+Pre-requisite: Apache Maven >= 3.6.3, Java >= 17 and a Kubernetes cluster reachable through your current kube context, with an nginx ingress controller.
 
 Deploy the `citelibre` alveolus:
 
@@ -68,7 +81,7 @@ Delete it:
 mvn -e bundlebee:delete@k8s [-Dbundlebee.debug=true] [-Ddeployment.alveolus=citelibre]
 ----
 
-`-Dbundlebee.debug=true` enables dry-run and verbose mode.
+`-Dbundlebee.debug=true` enables dry-run and verbose mode. Any placeholder can be overridden with `-D<placeholder>=<value>`, for instance `-Dcitelibre.public.url=https://citelibre.example.org`.
 
 === Local deployment with Minikube
 
@@ -77,16 +90,25 @@ The `scripts/` directory wraps Minikube around the commands above:
 [source,bash]
 ----
 ./scripts/0_install.sh   # install minikube
-./scripts/1_start.sh     # start minikube with the metrics-server addon
+./scripts/1_start.sh     # start minikube with the metrics-server and ingress addons
 ./scripts/2_status.sh    # minikube status
-./scripts/3_deploy.sh    # deploy the citelibre alveolus and open the dashboard
+./scripts/3_deploy.sh    # load the local CiteLibre images into minikube and deploy the citelibre alveolus
+./scripts/8_expose.sh    # expose the ingress on http://localhost:8088 (keep it running)
 ./scripts/4_destroy.sh   # delete the citelibre alveolus
 ./scripts/5_listPods.sh  # list pods and the URLs of the deployed services
 ./scripts/6_stop.sh      # stop minikube
 ./scripts/7_delete.sh    # delete the minikube cluster
 ----
 
-The CiteLibre images are built from the https://github.com/citelibreorg/packaging[packaging] repository.
+The CiteLibre images are built from the https://github.com/citelibreorg/packaging[packaging] repository (`mvn clean package -Passembly,rendezvous,docker`), then loaded into minikube by `3_deploy.sh`.
+
+The first deployment takes a few minutes (database imports, Keycloak first start). Then, with `8_expose.sh` running:
+
+- Back office at http://localhost:8088/citelibre-rendezvous/jsp/admin/AdminMenu.jsp : admin@citelibre.org/coucou
+- Front office at http://localhost:8088/citelibre-rendezvous/jsp/site/Portal.jsp : test@citelibre.org/coucou
+- Keycloak administration at http://localhost:8088/keycloak/admin/
+
+The applications must be reached on `http://localhost:<port>`: the Keycloak clients only allow `http://localhost*` redirect URIs. The port is the `citelibre.public.url` placeholder (`http://localhost:8088` by default).
 
 == 📖 Documentation
 

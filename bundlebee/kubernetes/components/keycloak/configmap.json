@@ -1,0 +1,32 @@
+{
+  "apiVersion": "v1",
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "citelibre-keycloak",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "citelibre-keycloak",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by": "{{user.name:-unknown}}",
+      "deploy.at": "{{bundlebee.deploytime:-unset}}"
+    },
+    "annotations": {
+      "io.yupiik.bundlebee/putOnUpdate": "true"
+    }
+  },
+  "data": {
+    "KC_DB": "mariadb",
+    "KC_DB_URL": "jdbc:mariadb://citelibre-mariadb:3306/keycloak",
+    "KC_DB_USERNAME": "{{citelibre-mariadb.user:-citelibre}}",
+    "KC_DB_PASSWORD": "{{citelibre-mariadb.password:-citelibre}}",
+    "KC_FEATURES": "hostname:v2",
+    "KC_HTTP_ENABLED": "true",
+    "KC_HTTP_RELATIVE_PATH": "/keycloak",
+    "KC_HOSTNAME": "{{citelibre.public.url}}/keycloak",
+    "KC_HOSTNAME_BACKCHANNEL_DYNAMIC": "true",
+    "KC_PROXY_HEADERS": "xforwarded",
+    "KC_HEALTH_ENABLED": "true",
+    "KC_METRICS_ENABLED": "true"
+  }
+}

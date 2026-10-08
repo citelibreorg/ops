@@ -20,6 +20,9 @@
               ]
             }
           ]
+        },
+        {
+          "name": "namespace/serviceaccount.json"
         }
       ]
     },
@@ -44,6 +47,31 @@
         },
         {
           "name": "_template/database/service.json"
+        }
+      ]
+    },
+    {
+      "//type": "template",
+      "name": "database-init-template",
+      "descriptors": [
+        {
+          "name": "_template/database-init/configmap.json"
+        },
+        {
+          "name": "_template/database-init/job.json",
+          "await": true,
+          "awaitConditions": [
+            {
+              "command": "apply",
+              "conditions": [
+                {
+                  "type": "JSON_POINTER",
+                  "pointer": "/status/succeeded",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
         }
       ]
     }

@@ -100,7 +100,12 @@
             }
           }
         ],
-        "serviceAccountName": "{{{{application.name}}.account.name:-{{application.account.name:-default}}}}",
+        "serviceAccountName": "{{{{application.name}}.account.name:-{{application.account.name:-{{project.name}}}}}}",
+        "dnsConfig": {
+          "options": [
+            { "name": "ndots", "value": "{{citelibre.dns.ndots:-2}}" }
+          ]
+        },
         "imagePullSecrets": [
           {
             "name": "{{{{application.name}}.image.pullSecret:-{{application.image.pullSecret:-null}}}}"

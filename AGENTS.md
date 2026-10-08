@@ -22,13 +22,48 @@ CiteLibre is split into three sibling repositories (usually cloned side by side)
 ## Deployment (Bundlebee)
 
 - Descriptors: `bundlebee/` (`manifest.json` + `manifests/*.json`, alveolus
-  `citelibre`; Kubernetes descriptors in `bundlebee/kubernetes/`).
+  `citelibre` = `namespace` + `citelibre-platform` + `citelibre-application`;
+  Kubernetes descriptors in `bundlebee/kubernetes/`, injected files in
+  `bundlebee/resources/`).
 - Apply: `mvn -e bundlebee:apply@k8s`; delete: `mvn -e bundlebee:delete@k8s`;
   dry-run + verbose: `-Dbundlebee.debug=true`; other alveolus: `-Ddeployment.alveolus=…`.
-- Default placeholder values: `bundlebee/environments/default.properties`.
-- `scripts/0_install.sh` … `7_delete.sh` wrap minikube around these commands
+  Descriptors with `await` wait up to `bundlebee.apply.descriptorAwaitTimeout`
+  (5 min in `pom.xml`: Keycloak first start, SQL imports).
+- Default placeholder values: `bundlebee/environments/default.properties` (local dev
+  values, incl. the dev OAuth2 client secrets). Override with `-D<placeholder>=…`.
+- `scripts/0_install.sh` … `8_expose.sh` wrap minikube around these commands
   (`3_deploy.sh` / `4_destroy.sh` cd to the repo root, they can be run from anywhere).
+  `3_deploy.sh` loads the locally built images into minikube (`CITELIBRE_IMAGES`);
+  `8_expose.sh` port-forwards the ingress controller to `http://localhost:8088`.
 - Images (`citelibre/citelibre-<app>`) are built in the `packaging` repo.
+
+## Platform and applications
+
+- Platform: MariaDB (single instance shared by every database), Elasticsearch, Solr,
+  Keycloak (`KC_HTTP_RELATIVE_PATH=/keycloak`, theme from a ConfigMap). Applications:
+  RendezVous (generic `application-template`, env in
+  `kubernetes/applications/citelibre-rendezvous/configmap.json`). One nginx Ingress
+  serves `/keycloak` and `/citelibre-<app>`.
+- Public URLs must be `http://localhost*`: the Keycloak clients (demo realm data) only
+  allow these redirect URIs. `citelibre.public.url` (default `http://localhost:8088`)
+  drives Lutece URLs and `KC_HOSTNAME`; server-to-server calls (token, userinfo) use
+  `http://citelibre-keycloak:8080/keycloak`.
+- Databases are created by `database-init-template` (ConfigMap + Job), parameterized by
+  `dbinit.name` (= folder `bundlebee/resources/sql/<dbinit.name>/`, files imported in
+  alphabetical order) and `dbinit.database`. `resources/sql/init_db.sh` is idempotent
+  (skips an existing database, drops it on a failed import). Job specs are immutable, so
+  each deployment creates a new Job suffixed with `bundlebee.deploytime`, garbage
+  collected after `dbinit.ttlSecondsAfterFinished`. Do not use the
+  `io.yupiik.bundlebee/force` annotation on Jobs: it deletes then PUTs → 404.
+- A ConfigMap read through `envFrom` must be created before its Deployment: put it in
+  its own alveolus listed before the template, with `chainDependencies: true`
+  (see `citelibre-rendezvous`).
+- SQL files and the Keycloak theme are copies of the `demo` repo files: keep them in sync.
+- Keycloak needs ≥ 2Gi (OOMKilled at 1Gi during its startup build).
+- Every apply restarts the pods: the templates put `deploy.at` in the pod labels.
+- `bundlebee:lint@k8s` must stay clean (only the "replicas >= 3" warnings are
+  expected): pods use the `citelibre` ServiceAccount (no token automount) and set
+  `dnsConfig`; containers declare resources.
 
 ## Placeholder documentation
 

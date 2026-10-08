@@ -3,9 +3,71 @@
   "interpolateAlveoli": true,
   "alveoli": [
     {
+      "name": "citelibre-rendezvous-db",
+      "dependencies": [
+        {
+          "name": "database-init-template"
+        }
+      ],
+      "placeholders": {
+        "dbinit.name": "citelibre-rendezvous",
+        "dbinit.database": "{{citelibre-rendezvous.database:-rendezvous}}"
+      }
+    },
+    {
+      "name": "citelibre-rendezvous-config",
+      "descriptors": [
+        {
+          "name": "applications/citelibre-rendezvous/configmap.json"
+        }
+      ]
+    },
+    {
+      "name": "citelibre-rendezvous",
+      "dependencies": [
+        {
+          "name": "citelibre-rendezvous-db"
+        },
+        {
+          "name": "citelibre-rendezvous-config"
+        },
+        {
+          "name": "application-template"
+        }
+      ],
+      "chainDependencies": true,
+      "placeholders": {
+        "application.name": "citelibre-rendezvous",
+        "application.component": "citelibre-rendezvous",
+        "application.image.name": "{{citelibre.image.registry:-docker.io}}/citelibre/citelibre-rendezvous",
+        "application.image.version": "{{citelibre-rendezvous.version:-1.0.9}}",
+        "application.version": "{{citelibre-rendezvous.version:-1.0.9}}",
+        "application.probes.readiness.path": "/citelibre-rendezvous/jsp/admin/AdminMessage.jsp",
+        "application.probes.liveness.path": "/citelibre-rendezvous/jsp/admin/AdminMessage.jsp",
+        "application.resources.requests.memory": "{{citelibre-rendezvous.resources.requests.memory:-1Gi}}",
+        "application.resources.limits.memory": "{{citelibre-rendezvous.resources.limits.memory:-2Gi}}",
+        "application.resources.limits.cpu": "{{citelibre-rendezvous.resources.limits.cpu:-2}}"
+      }
+    },
+    {
+      "name": "citelibre-ingress",
+      "descriptors": [
+        {
+          "name": "components/ingress/ingress.json"
+        }
+      ]
+    },
+    {
       "//": "citelibre-packaging",
       "name": "citelibre-application",
+      "chainDependencies": true,
       "dependencies": [
+        {
+          "name": "citelibre-rendezvous"
+        },
+        {
+          "name": "citelibre-ingress"
+        }
       ]
     }
   ]

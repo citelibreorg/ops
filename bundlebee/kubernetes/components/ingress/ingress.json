@@ -1,0 +1,41 @@
+{
+  "apiVersion": "networking.k8s.io/v1",
+  "kind": "Ingress",
+  "metadata": {
+    "name": "citelibre",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "citelibre-ingress",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by": "{{user.name:-unknown}}",
+      "deploy.at": "{{bundlebee.deploytime:-unset}}"
+    },
+    "annotations": {
+      "io.yupiik.bundlebee/putOnUpdate": "true",
+      "nginx.ingress.kubernetes.io/proxy-buffer-size": "16k",
+      "nginx.ingress.kubernetes.io/proxy-body-size": "50m"
+    }
+  },
+  "spec": {
+    "ingressClassName": "{{citelibre.ingress.class:-nginx}}",
+    "rules": [
+      {
+        "http": {
+          "paths": [
+            {
+              "path": "/keycloak",
+              "pathType": "Prefix",
+              "backend": { "service": { "name": "citelibre-keycloak", "port": { "number": 8080 } } }
+            },
+            {
+              "path": "/citelibre-rendezvous",
+              "pathType": "Prefix",
+              "backend": { "service": { "name": "citelibre-rendezvous", "port": { "number": 80 } } }
+            }
+          ]
+        }
+      }
+    ]
+  }
+}

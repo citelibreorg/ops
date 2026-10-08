@@ -1,0 +1,63 @@
+{
+  "apiVersion": "batch/v1",
+  "kind": "Job",
+  "metadata": {
+    "name": "{{bundlebee-lowercase:{{dbinit.name}}-init-{{bundlebee.deploytime:-0}}}}",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "{{bundlebee-lowercase:{{dbinit.name}}-init}}",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by": "{{user.name:-unknown}}",
+      "deploy.at": "{{bundlebee.deploytime:-unset}}"
+    }
+  },
+  "spec": {
+    "backoffLimit": {{dbinit.backoffLimit:-3}},
+    "ttlSecondsAfterFinished": {{dbinit.ttlSecondsAfterFinished:-600}},
+    "template": {
+      "metadata": {
+        "labels": {
+          "app.kubernetes.io/name": "{{bundlebee-lowercase:{{dbinit.name}}-init}}"
+        }
+      },
+      "spec": {
+        "restartPolicy": "Never",
+        "dnsConfig": {
+          "options": [
+            { "name": "ndots", "value": "{{citelibre.dns.ndots:-2}}" }
+          ]
+        },
+        "containers": [
+          {
+            "name": "init-db",
+            "image": "{{citelibre.image.registry:-docker.io}}/mariadb:{{citelibre-mariadb.version:-10.6}}",
+            "imagePullPolicy": "IfNotPresent",
+            "command": ["sh", "/init/init_db.sh"],
+            "env": [
+              { "name": "MYSQL_PWD", "value": "{{citelibre-mariadb.root.password:-root}}" },
+              { "name": "INIT_DATABASE_HOST", "value": "{{dbinit.host:-citelibre-mariadb}}" },
+              { "name": "INIT_DATABASE_NAME", "value": "{{dbinit.database}}" },
+              { "name": "INIT_APP_USER", "value": "{{citelibre-mariadb.user:-citelibre}}" }
+            ],
+            "resources": {
+              "requests": { "memory": "64Mi", "cpu": "100m" },
+              "limits": { "memory": "256Mi", "cpu": "1" }
+            },
+            "volumeMounts": [
+              { "name": "init", "mountPath": "/init" }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "init",
+            "configMap": {
+              "name": "{{bundlebee-lowercase:{{dbinit.name}}-init}}"
+            }
+          }
+        ]
+      }
+    }
+  }
+}

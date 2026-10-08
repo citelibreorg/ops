@@ -1,0 +1,99 @@
+{
+  "apiVersion": "apps/v1",
+  "kind": "Deployment",
+  "metadata": {
+    "name": "citelibre-keycloak",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "citelibre-keycloak",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by": "{{user.name:-unknown}}",
+      "deploy.at": "{{bundlebee.deploytime:-unset}}",
+      "app.kubernetes.io/version": "{{citelibre-keycloak.version:-26.3.3-0}}"
+    },
+    "annotations": {
+      "io.yupiik.bundlebee/putOnUpdate": "true"
+    }
+  },
+  "spec": {
+    "replicas": {{citelibre-keycloak.replicas:-1}},
+    "selector": {
+      "matchLabels": {
+        "app.kubernetes.io/name": "citelibre-keycloak"
+      }
+    },
+    "template": {
+      "metadata": {
+        "labels": {
+          "app.kubernetes.io/name": "citelibre-keycloak",
+          "deploy.at": "{{bundlebee.deploytime:-unset}}"
+        }
+      },
+      "spec": {
+        "serviceAccountName": "{{citelibre-keycloak.account.name:-{{project.name}}}}",
+        "dnsConfig": {
+          "options": [
+            { "name": "ndots", "value": "{{citelibre.dns.ndots:-2}}" }
+          ]
+        },
+        "containers": [
+          {
+            "name": "citelibre-keycloak",
+            "image": "{{citelibre.image.registry:-docker.io}}/keycloak/keycloak:{{citelibre-keycloak.version:-26.3.3-0}}",
+            "imagePullPolicy": "IfNotPresent",
+            "args": ["start", "--spi-login-protocol-openid-connect-legacy-logout-redirect-uri=true"],
+            "envFrom": [
+              { "configMapRef": { "name": "citelibre-keycloak" } }
+            ],
+            "ports": [
+              { "name": "http", "containerPort": 8080 },
+              { "name": "management", "containerPort": 9000 }
+            ],
+            "resources": {
+              "requests": {
+                "memory": "{{citelibre-keycloak.resources.requests.memory:-1Gi}}",
+                "cpu": "{{citelibre-keycloak.resources.requests.cpu:-250m}}"
+              },
+              "limits": {
+                "memory": "{{citelibre-keycloak.resources.limits.memory:-2Gi}}",
+                "cpu": "{{citelibre-keycloak.resources.limits.cpu:-2}}"
+              }
+            },
+            "startupProbe": {
+              "httpGet": { "path": "/keycloak/health/started", "port": 9000 },
+              "periodSeconds": 5,
+              "failureThreshold": 60
+            },
+            "readinessProbe": {
+              "httpGet": { "path": "/keycloak/health/ready", "port": 9000 },
+              "periodSeconds": 10
+            },
+            "livenessProbe": {
+              "httpGet": { "path": "/keycloak/health/live", "port": 9000 },
+              "periodSeconds": 30
+            },
+            "volumeMounts": [
+              { "name": "themes", "mountPath": "/opt/keycloak/themes/citelibre" }
+            ]
+          }
+        ],
+        "volumes": [
+          {
+            "name": "themes",
+            "configMap": {
+              "name": "citelibre-keycloak-themes",
+              "items": [
+                { "key": "login.ftl", "path": "login/login.ftl" },
+                { "key": "theme.properties", "path": "login/theme.properties" },
+                { "key": "styles.css", "path": "login/resources/css/styles.css" },
+                { "key": "bg.svg", "path": "login/resources/img/bg.svg" },
+                { "key": "logo-pack-dark.min.svg", "path": "login/resources/img/logo-pack-dark.min.svg" }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,68 @@
+{
+  "apiVersion": "v1",
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "citelibre-rendezvous",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "citelibre-rendezvous",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by": "{{user.name:-unknown}}",
+      "deploy.at": "{{bundlebee.deploytime:-unset}}"
+    },
+    "annotations": {
+      "io.yupiik.bundlebee/putOnUpdate": "true"
+    }
+  },
+  "data": {
+    "LUTECE_PROD_URL": "{{citelibre.public.url}}/citelibre-rendezvous",
+    "LUTECE_ADMIN_PROD_URL": "{{citelibre.public.url}}/citelibre-rendezvous",
+    "LUTECE_BASE_URL": "{{citelibre.public.url}}/citelibre-rendezvous",
+    "LUTECE_HTTPS_SUPPORT": "{{citelibre.public.https:-0}}",
+
+    "PORTAL_URL": "jdbc:mysql://citelibre-mariadb:3306/{{citelibre-rendezvous.database:-rendezvous}}?autoReconnect=true&useUnicode=yes&characterEncoding=utf8",
+    "PORTAL_USER": "{{citelibre-mariadb.user:-citelibre}}",
+    "PORTAL_PASSWORD": "{{citelibre-mariadb.password:-citelibre}}",
+
+    "ELASTICDATA_ELASTIC_SERVER_URL": "http://citelibre-elasticsearch:9200",
+    "ELASTICDATA_ELASTIC_SERVER_LOGIN": "{{citelibre-elasticsearch.elastic.user.name:-elastic}}",
+    "ELASTICDATA_ELASTIC_SERVER_PWD": "{{citelibre-elasticsearch.elastic.user.password:-}}",
+    "SOLR_SERVER_ADDRESS": "http://citelibre-solr:8983/solr/citelibre/",
+    "MATOMO_DEFAULT_SERVER_HTTP_URL": "{{citelibre.public.url}}/matomo",
+    "MATOMO_DEFAULT_SERVER_HTTPS_URL": "{{citelibre.public.url}}/matomo",
+    "KIBANA_URL": "http://citelibre-kibana:5601",
+    "KIBANA_URL_IFRAME": "{{citelibre.public.url}}/kibana",
+    "ADDRESS_AUTOCOMPLETE_SUGGESTPOI_WS_URL": "https://api-adresse.data.gouv.fr/search/",
+
+    "ADMINAUTHENTICATIONOAUTH2_SERVER_ISSUER": "{{citelibre.public.url}}/keycloak/realms/citelibre_backoffice",
+    "ADMINAUTHENTICATIONOAUTH2_SERVER_ENABLEJWTPARSER": "false",
+    "ADMINAUTHENTICATIONOAUTH2_SERVER_AUTHORIZATIONENDPOINTURI": "{{citelibre.public.url}}/keycloak/realms/citelibre_backoffice/protocol/openid-connect/auth",
+    "ADMINAUTHENTICATIONOAUTH2_SERVER_TOKENENDPOINTURI": "http://citelibre-keycloak:8080/keycloak/realms/citelibre_backoffice/protocol/openid-connect/token",
+    "ADMINAUTHENTICATIONOAUTH2_AUTHDATACLIENT_DATASERVERURI": "http://citelibre-keycloak:8080/keycloak/realms/citelibre_backoffice/protocol/openid-connect/userinfo",
+    "ADMINAUTHENTICATIONOAUTH2_SERVER_LOGOUTENDPOINTURI": "{{citelibre.public.url}}/keycloak/realms/citelibre_backoffice/protocol/openid-connect/logout?client_id=monadmin&amp;post_logout_redirect_uri={{citelibre.public.url}}/citelibre-rendezvous/jsp/admin/AdminLogin.jsp",
+    "ADMINAUTHENTICATIONOAUTH2_CLIENT_CLIENTID": "monadmin",
+    "ADMINAUTHENTICATIONOAUTH2_CLIENT_CLIENTSECRET": "{{citelibre-keycloak.backoffice.client.secret}}",
+    "ADMINAUTHENTICATIONOAUTH2_URL_DOLOGOUT": "{{citelibre.public.url}}/keycloak/realms/citelibre_backoffice/protocol/openid-connect/logout?client_id=monadmin&post_logout_redirect_uri={{citelibre.public.url}}/citelibre-rendezvous/jsp/admin/AdminLogin.jsp",
+    "ADMINAUTHENTICATIONOAUTH2_URL_LOGIN_PAGE": "servlet/plugins/oauth2/callback?data_client=adminAuthData&handler_name=adminOauth2Handler",
+    "LUTECE_ADMIN_LOGOUT_URL": "{{citelibre.public.url}}/keycloak/realms/citelibre_backoffice/protocol/openid-connect/logout?client_id=monadmin&amp;post_logout_redirect_uri={{citelibre.public.url}}/citelibre-rendezvous/jsp/admin/AdminLogin.jsp",
+
+    "MYLUTECE_URL_DOLOGOUT": "{{citelibre.public.url}}/keycloak/realms/citelibre_frontoffice/protocol/openid-connect/logout?client_id=moncompte&amp;post_logout_redirect_uri={{citelibre.public.url}}/citelibre-rendezvous/",
+    "MYLUTECE_OAUTH2_SERVER_ISSUER": "{{citelibre.public.url}}/keycloak/realms/citelibre_frontoffice",
+    "MYLUTECE_OAUTH2_SERVER_ENABLEJWTPARSER": "false",
+    "MYLUTECE_OAUTH2_SERVER_AUTHORIZATIONENDPOINTURI": "{{citelibre.public.url}}/keycloak/realms/citelibre_frontoffice/protocol/openid-connect/auth",
+    "MYLUTECE_OAUTH2_SERVER_TOKENENDPOINTURI": "http://citelibre-keycloak:8080/keycloak/realms/citelibre_frontoffice/protocol/openid-connect/token",
+    "MYLUTECE_OAUTH2_SERVER_LOGOUTENDPOINTURI": "{{citelibre.public.url}}/keycloak/realms/citelibre_frontoffice/protocol/openid-connect/logout?client_id=moncompte&amp;post_logout_redirect_uri={{citelibre.public.url}}/citelibre-rendezvous/",
+    "MYLUTECE_OAUTH2_AUTHDATACLIENT_DATASERVERURI": "http://citelibre-keycloak:8080/keycloak/realms/citelibre_frontoffice/protocol/openid-connect/userinfo",
+    "MYLUTECE_OAUTH2_CLIENT_CLIENTID": "moncompte",
+    "MYLUTECE_OAUTH2_CLIENT_CLIENTSECRET": "{{citelibre-keycloak.frontoffice.client.secret}}",
+
+    "OAUTH2_SERVER_ISSUER": "{{citelibre.public.url}}/keycloak/realms/citelibre_frontoffice",
+    "OAUTH2_SERVER_ENABLEJWTPARSER": "false",
+    "OAUTH2_SERVER_AUTHORIZATIONENDPOINTURI": "{{citelibre.public.url}}/keycloak/realms/citelibre_frontoffice/protocol/openid-connect/auth",
+    "OAUTH2_SERVER_TOKENENDPOINTURI": "http://citelibre-keycloak:8080/keycloak/realms/citelibre_frontoffice/protocol/openid-connect/token",
+    "OAUTH2_SERVER_LOGOUTENDPOINTURI": "{{citelibre.public.url}}/keycloak/realms/citelibre_frontoffice/protocol/openid-connect/logout?client_id=moncompte&amp;post_logout_redirect_uri={{citelibre.public.url}}/citelibre-rendezvous/",
+    "OAUTH2_CLIENT_CLIENTID": "moncompte",
+    "OAUTH2_CLIENT_CLIENTSECRET": "{{citelibre-keycloak.frontoffice.client.secret}}"
+  }
+}

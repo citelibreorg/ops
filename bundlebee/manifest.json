@@ -2,7 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/yupiik/bundlebee/gh-pages/generated/jsonschema/manifest.descriptor.json",
   "requirements": [
     {
-      "minBundlebeeVersion": "1.0.31"
+      "minBundlebeeVersion": "1.0.32"
     }
   ],
   "interpolateAlveoli": true,
@@ -27,6 +27,9 @@
         },
         {
           "name": "citelibre-platform"
+        },
+        {
+          "name": "citelibre-application"
         }
       ]
     }

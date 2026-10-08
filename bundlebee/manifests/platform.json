@@ -93,6 +93,53 @@
       }
     },
     {
+      "name": "citelibre-keycloak-db",
+      "dependencies": [
+        {
+          "name": "database-init-template"
+        }
+      ],
+      "placeholders": {
+        "dbinit.name": "keycloak",
+        "dbinit.database": "{{citelibre-keycloak.database:-keycloak}}"
+      }
+    },
+    {
+      "name": "citelibre-keycloak",
+      "descriptors": [
+        {
+          "name": "components/keycloak/configmap.json"
+        },
+        {
+          "name": "components/keycloak/themes-configmap.json"
+        },
+        {
+          "name": "components/keycloak/service.json"
+        },
+        {
+          "name": "components/keycloak/deployment.json",
+          "await": true,
+          "awaitConditions": [
+            {
+              "command": "apply",
+              "conditions": [
+                {
+                  "type": "JSON_POINTER",
+                  "pointer": "/status/readyReplicas",
+                  "value": "1"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "citelibre-keycloak-db"
+        }
+      ]
+    },
+    {
       "//": "platform-all-in-one",
       "name": "citelibre-platform",
       "chainDependencies": true,
@@ -105,6 +152,9 @@
         },
         {
           "name": "citelibre-solr"
+        },
+        {
+          "name": "citelibre-keycloak"
         }
       ]
     }

@@ -1,0 +1,25 @@
+{
+  "apiVersion": "v1",
+  "kind": "ConfigMap",
+  "metadata": {
+    "name": "citelibre-keycloak-themes",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "citelibre-keycloak",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by": "{{user.name:-unknown}}",
+      "deploy.at": "{{bundlebee.deploytime:-unset}}"
+    },
+    "annotations": {
+      "io.yupiik.bundlebee/putOnUpdate": "true"
+    }
+  },
+  "data": {
+    "login.ftl": "{{bundlebee-json-inline-file:{{project.basedir}}/bundlebee/resources/keycloak/themes/citelibre/login/login.ftl}}",
+    "theme.properties": "{{bundlebee-json-inline-file:{{project.basedir}}/bundlebee/resources/keycloak/themes/citelibre/login/theme.properties}}",
+    "styles.css": "{{bundlebee-json-inline-file:{{project.basedir}}/bundlebee/resources/keycloak/themes/citelibre/login/resources/css/styles.css}}",
+    "bg.svg": "{{bundlebee-json-inline-file:{{project.basedir}}/bundlebee/resources/keycloak/themes/citelibre/login/resources/img/bg.svg}}",
+    "logo-pack-dark.min.svg": "{{bundlebee-json-inline-file:{{project.basedir}}/bundlebee/resources/keycloak/themes/citelibre/login/resources/img/logo-pack-dark.min.svg}}"
+  }
+}

@@ -63,13 +63,15 @@
         <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
 
         <!-- tools -->
-        <yupiik-bundlebee.version>1.0.31</yupiik-bundlebee.version>
+        <yupiik-bundlebee.version>1.0.32</yupiik-bundlebee.version>
 
         <!-- deployment -->
         <bundlebee.debug>false</bundlebee.debug>
         <bundlebee.kube.dryRun>${bundlebee.debug}</bundlebee.kube.dryRun>
         <bundlebee.kube.verbose>${bundlebee.debug}</bundlebee.kube.verbose>
         <deployment.alveolus>citelibre</deployment.alveolus>
+        <!-- database init jobs and Keycloak first start take a few minutes -->
+        <bundlebee.apply.descriptorAwaitTimeout>300000</bundlebee.apply.descriptorAwaitTimeout>
         <!-- placeholder descriptions are incomplete, see AGENTS.md -->
         <bundlebee.placeholder-extract.skip>true</bundlebee.placeholder-extract.skip>
     </properties>
