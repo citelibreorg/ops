@@ -1,0 +1,112 @@
+{
+  "$schema": "https://raw.githubusercontent.com/yupiik/bundlebee/gh-pages/generated/jsonschema/manifest.descriptor.json",
+  "interpolateAlveoli": true,
+  "alveoli": [
+    {
+      "name": "citelibre-mariadb",
+      "descriptors": [
+        {
+          "name": "components/mariadb/configmap.json"
+        },
+        {
+          "name": "components/mariadb/persistencevolume.json"
+        },
+        {
+          "name": "components/mariadb/persistencevolumeclaim.json"
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "database-template"
+        }
+      ],
+      "placeholders": {
+        "database.name": "citelibre-mariadb",
+        "database.component": "citelibre-mariadb",
+        "database.image.name": "{{citelibre.image.registry:-docker.io}}/mariadb",
+        "database.image.version": "{{citelibre-mariadb.version:-10.6}}",
+        "database.replicas": "{{citelibre-mariadb.replicas:-{{database.replicas:-1}}}}",
+        "database.volumeMount": "/var/lib/mysql",
+        "database.port.name": "mariadb-port"
+      }
+    },
+    {
+      "name": "citelibre-elasticsearch",
+      "descriptors": [
+        {
+          "name": "components/elasticsearch/configmap.json"
+        },
+        {
+          "name": "components/elasticsearch/persistencevolume.json"
+        },
+        {
+          "name": "components/elasticsearch/persistencevolumeclaim.json"
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "database-template"
+        }
+      ],
+      "placeholders": {
+        "database.name": "citelibre-elasticsearch",
+        "database.component": "citelibre-elasticsearch",
+        "database.image.name": "{{citelibre.image.registry:-docker.io}}/elasticsearch",
+        "database.image.version": "{{citelibre-elasticsearch.version:-8.18.4}}",
+        "database.replicas": "{{citelibre-elasticsearch.replicas:-1}}",
+        "database.port": "9200",
+        "database.targetPort": "9200",
+        "database.volumeMount": "/usr/share/elasticsearch/data",
+        "database.resources.limits.memory": "{{citelibre-elasticsearch.resources.limits.memory:-768Mi}}",
+        "database.port.name": "es-port"
+      }
+    },
+    {
+      "name": "citelibre-solr",
+      "descriptors": [
+        {
+          "name": "components/solr/configmap.json"
+        },
+        {
+          "name": "components/solr/persistencevolume.json"
+        },
+        {
+          "name": "components/solr/persistencevolumeclaim.json"
+        }
+      ],
+      "dependencies": [
+        {
+          "name": "database-template"
+        }
+      ],
+      "placeholders": {
+        "database.name": "citelibre-solr",
+        "database.component": "citelibre-solr",
+        "database.image.name": "{{citelibre.image.registry:-docker.io}}/solr",
+        "database.image.version": "{{citelibre-solr.version:-9.1.1}}",
+        "database.replicas": "{{citelibre-solr.replicas:-1}}",
+        "database.port": "8983",
+        "database.targetPort": "8983",
+        "database.volumeMount": "/usr/share/solr/data",
+        "database.resources.limits.memory": "{{citelibre-solr.resources.limits.memory:-768Mi}}",
+        "database.port.name": "solr-port"
+      }
+    },
+    {
+      "//": "platform-all-in-one",
+      "name": "citelibre-platform",
+      "chainDependencies": true,
+      "dependencies": [
+        {
+          "name": "citelibre-mariadb"
+        },
+        {
+          "name": "citelibre-elasticsearch"
+        },
+        {
+          "name": "citelibre-solr"
+        }
+      ]
+    }
+  ]
+}

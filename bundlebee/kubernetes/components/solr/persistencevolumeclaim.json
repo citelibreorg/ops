@@ -1,0 +1,27 @@
+{
+  "kind": "PersistentVolumeClaim",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "{{bundlebee-lowercase:{{database.name}}-claim}}",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "{{bundlebee-lowercase:{{database.name}}}}",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by":"{{user.name:-unknown}}",
+      "deploy.at":"{{bundlebee.deploytime:-unset}}"
+    }
+  },
+  "spec": {
+    "storageClassName": "{{citelibre-elasticsearch.storage.class:-standard}}",
+    "accessModes": [
+      "{{citelibre-elasticsearch.accessMode:-ReadWriteOnce}}"
+    ],
+    "resources": {
+      "requests": {
+        "storage": "{{citelibre-elasticsearch.request.storage:-5Gi}}"
+      }
+    }
+    {{citelibre-elasticsearch.pvc.selector:-}}
+  }
+}

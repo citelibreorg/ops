@@ -1,0 +1,31 @@
+{
+  "kind": "PersistentVolume",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "{{bundlebee-lowercase:{{database.name}}-volume}}",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "{{bundlebee-lowercase:{{database.name}}-volume}}",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by":"{{user.name:-unknown}}",
+      "deploy.at":"{{bundlebee.deploytime:-unset}}"
+    }
+  },
+  "spec": {
+    "storageClassName": "{{citelibre-elasticsearch.storage.class:-standard}}",
+    "capacity": {
+      "storage": "{{citelibre-elasticsearch.request.storage:-5Gi}}"
+    },
+    "accessModes": [
+      "{{citelibre-elasticsearch.accessMode:-ReadWriteOnce}}"
+    ],
+    "claimRef": {
+      "name": "{{bundlebee-lowercase:{{database.name}}-claim}}",
+      "namespace": "{{namespace.name}}"
+    },
+    "hostPath": {
+      "path": "{{citelibre-elasticsearch.persistencevolume.host.data.dir:-/data/elasticsearch-local}}"
+    }
+  }
+}

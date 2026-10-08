@@ -1,0 +1,33 @@
+{
+  "apiVersion":"v1",
+  "kind":"ConfigMap",
+  "metadata":{
+    "name":"{{bundlebee-lowercase:{{database.name}}}}",
+    "namespace": "{{namespace.name}}",
+    "labels":{
+      "app.kubernetes.io/name": "{{bundlebee-lowercase:{{database.name}}}}",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by":"{{user.name:-unknown}}",
+      "deploy.at":"{{bundlebee.deploytime:-unset}}"
+    },
+    "annotations": {
+      "io.yupiik.bundlebee/putOnUpdate": "true"
+    }
+  },
+  "data": {
+    "APPLICATION_ENVIRONMENT":"{{bundlebee.environment:-development}}",
+    "_DEPLOY_TIME":"{{bundlebee.deploytime:-unset}}",
+    "discovery.type": "{{citelibre-elasticsearch.discoveryType:-single-node}}",
+    "cluster.name": "{{citelibre-elasticsearch.clusterName:-citelibre-cluster}}",
+    "ES_JAVA_OPTS": "{{citelibre-elasticsearch.javaOpts:--Dbundlebee=true}}",
+    "MAX_LOCKED_MEMORY": "{{citelibre-elasticsearch.max.locked.memory:-unlimited}}",
+    "bootstrap.memory_lock": "{{citelibre-elasticsearch.bootstrap.memory_lock:-true}}",
+    "network.host": "{{citelibre-elasticsearch.network.host:-0.0.0.0}}",
+    "xpack.security.enabled": "{{citelibre-elasticsearch.xpack.security.enabled:-false}}",
+    "xpack.security.http.ssl.enabled": "{{citelibre-elasticsearch.xpack.security.http.ssl.enabled:-false}}",
+    "ELASTIC_PASSWORD": "{{citelibre-elasticsearch.elastic.password:-changeme}}",
+    "ELASTICSEARCH_USERNAME": "{{citelibre-elasticsearch.elastic.user.name:-userAmin}}",
+    "ELASTICSEARCH_PASSWORD": "{{citelibre-elasticsearch.elastic.user.password:-changeme}}"
+  }
+}

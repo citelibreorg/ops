@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<!--
+
+    BSD 2-Clause License
+
+                                Copyright (c) 2025, CiteLibre
+
+                                Redistribution and use in source and binary forms, with or without
+                                modification, are permitted provided that the following conditions are met:
+
+                                1. Redistributions of source code must retain the above copyright notice, this
+                                list of conditions and the following disclaimer.
+
+                                2. Redistributions in binary form must reproduce the above copyright notice,
+                                this list of conditions and the following disclaimer in the documentation
+                                and/or other materials provided with the distribution.
+
+                                THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+                                AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+                                IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+                                DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+                                FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+                                DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+                                SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+                                CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+                                OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+                                OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.citelibre</groupId>
+    <artifactId>citelibre-ops</artifactId>
+    <name>CiteLibre :: Ops</name>
+    <version>2.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <description>Kubernetes deployment of the CiteLibre services suite with Yupiik Bundlebee</description>
+
+    <organization>
+        <name>CiteLibre</name>
+        <url>https://citelibre.org/</url>
+    </organization>
+
+    <inceptionYear>2025</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>BSD 2-Clause License</name>
+            <url>https://github.com/citelibreorg/ops/blob/main/LICENSE</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:https://github.com/citelibreorg/ops.git</connection>
+        <developerConnection>scm:git:https://github.com/citelibreorg/ops.git</developerConnection>
+        <tag>HEAD</tag>
+        <url>https://github.com/citelibreorg/ops.git</url>
+    </scm>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.build.timestamp.format>yyyyMMddHHmmss</maven.build.timestamp.format>
+
+        <!-- tools -->
+        <yupiik-bundlebee.version>1.0.31</yupiik-bundlebee.version>
+
+        <!-- deployment -->
+        <bundlebee.debug>false</bundlebee.debug>
+        <bundlebee.kube.dryRun>${bundlebee.debug}</bundlebee.kube.dryRun>
+        <bundlebee.kube.verbose>${bundlebee.debug}</bundlebee.kube.verbose>
+        <deployment.alveolus>citelibre</deployment.alveolus>
+        <!-- placeholder descriptions are incomplete, see AGENTS.md -->
+        <bundlebee.placeholder-extract.skip>true</bundlebee.placeholder-extract.skip>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>3.5.0</version>
+                <executions>
+                    <execution>
+                        <id>enforce-maven</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireMavenVersion>
+                                    <version>3.6</version>
+                                </requireMavenVersion>
+                                <requireJavaVersion>
+                                    <version>17</version>
+                                </requireJavaVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>com.mycila</groupId>
+                <artifactId>license-maven-plugin</artifactId>
+                <version>4.5</version>
+                <executions>
+                    <execution>
+                        <id>check-license</id>
+                        <phase>validate</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <licenseSets>
+                        <licenseSet>
+                            <inlineHeader><![CDATA[BSD 2-Clause License
+
+                            Copyright (c) ${project.inceptionYear}, ${project.organization.name}
+
+                            Redistribution and use in source and binary forms, with or without
+                            modification, are permitted provided that the following conditions are met:
+
+                            1. Redistributions of source code must retain the above copyright notice, this
+                            list of conditions and the following disclaimer.
+
+                            2. Redistributions in binary form must reproduce the above copyright notice,
+                            this list of conditions and the following disclaimer in the documentation
+                            and/or other materials provided with the distribution.
+
+                            THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+                            AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+                            IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+                            DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+                            FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+                            DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+                            SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+                            CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+                            OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+                            OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+                            ]]></inlineHeader>
+                            <useDefaultExcludes>true</useDefaultExcludes>
+                            <includes>
+                                <include>**/*.properties</include>
+                                <include>**/*.xml</include>
+                                <include>**/*.yaml</include>
+                            </includes>
+                            <excludes>
+                                <exclude>LICENSE</exclude>
+                                <exclude>**/*.adoc</exclude>
+                                <exclude>**/*.idea</exclude>
+                                <exclude>**/target/**</exclude>
+                                <exclude>**/.m2/**</exclude>
+                            </excludes>
+                        </licenseSet>
+                    </licenseSets>
+                </configuration>
+            </plugin>
+            <!--
+                mvn -e bundlebee:apply@k8s [-Dbundlebee.debug=true] [-Ddeployment.alveolus=citelibre]
+                mvn -e bundlebee:delete@k8s [-Dbundlebee.debug=true] [-Ddeployment.alveolus=citelibre]
+            -->
+            <plugin>
+                <groupId>io.yupiik</groupId>
+                <artifactId>bundlebee-maven-plugin</artifactId>
+                <version>${yupiik-bundlebee.version}</version>
+                <executions>
+                    <execution>
+                        <id>k8s</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>apply</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>doc</id>
+                        <goals>
+                            <goal>placeholder-extract</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                        <configuration>
+                            <skip>${bundlebee.placeholder-extract.skip}</skip>
+                            <outputType>FILE</outputType>
+                            <failOnInvalidDescription>true</failOnInvalidDescription>
+                            <dumpLocation>${project.build.directory}/generated/deployment</dumpLocation>
+                            <descriptions>${project.basedir}/bundlebee/placeholders.descriptions.properties</descriptions>
+                            <ignoredPlaceholders>
+                                user.name,bundlebee.deploytime,service.component,service.image.name,service.image.version,
+                                service.name,service.node.port,service.version,service.containerPort,
+                                bundlebee-directory-json-key-value-pairs-content:.*,project.basedir,bundlebee-lowercase:.*
+                            </ignoredPlaceholders>
+                        </configuration>
+                    </execution>
+                </executions>
+                <configuration>
+                    <!-- the plugin skips pom packaging by default, which would skip apply/delete too -->
+                    <skipPackaging>
+                        <skipPackaging>none</skipPackaging>
+                    </skipPackaging>
+                    <manifest>${project.basedir}/bundlebee/manifest.json</manifest>
+                    <alveolus>${deployment.alveolus}</alveolus>
+                    <mavenRepositoriesDownloadsEnabled>true</mavenRepositoriesDownloadsEnabled>
+                    <customPlaceholders>
+                        <bundlebee-placeholder-import-default>${project.basedir}/bundlebee/environments/default.properties</bundlebee-placeholder-import-default>
+                        <project.basedir>${project.basedir}</project.basedir>
+                        <deploy.by>${user.name}</deploy.by>
+                        <bundlebee.deploytime>${maven.build.timestamp}</bundlebee.deploytime>
+                    </customPlaceholders>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

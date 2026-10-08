@@ -1,0 +1,34 @@
+{
+  "$schema": "https://raw.githubusercontent.com/yupiik/bundlebee/gh-pages/generated/jsonschema/manifest.descriptor.json",
+  "requirements": [
+    {
+      "minBundlebeeVersion": "1.0.31"
+    }
+  ],
+  "interpolateAlveoli": true,
+  "references": [
+    {
+      "path": "manifests/shared.json"
+    },
+    {
+      "path": "manifests/platform.json"
+    },
+    {
+      "path": "manifests/applications.json"
+    }
+  ],
+  "alveoli": [
+    {
+      "name": "citelibre",
+      "chainDependencies": true,
+      "dependencies": [
+        {
+          "name": "namespace"
+        },
+        {
+          "name": "citelibre-platform"
+        }
+      ]
+    }
+  ]
+}

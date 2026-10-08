@@ -1,0 +1,31 @@
+{
+  "apiVersion": "v1",
+  "kind": "Service",
+  "metadata": {
+    "name": "{{bundlebee-lowercase:{{application.name}}}}",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "{{bundlebee-lowercase:{{application.name}}}}",
+      "app.kubernetes.io/instance": "{{application.name}}",
+      "app.kubernetes.io/version": "{{application.version}}",
+      "app.kubernetes.io/component": "{{application.component}}",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by": "{{user.name:-unknown}}",
+      "deploy.at": "{{bundlebee.deploytime:-unset}}"
+    }
+  },
+  "spec": {
+    "type": "NodePort",
+    "ports": [
+      {
+        "protocol": "TCP",
+        "port": {{application.port:-80}},
+        "targetPort": {{application.targetPort:-8080}}
+      }
+    ],
+    "selector": {
+      "app.kubernetes.io/name": "{{bundlebee-lowercase:{{application.name}}}}"
+    }
+  }
+}

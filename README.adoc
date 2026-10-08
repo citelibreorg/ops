@@ -1,0 +1,111 @@
+= Cite Libre - Ops
+
+image:https://img.shields.io/github/license/citelibreorg/ops.svg[License]
+
+**CiteLibre** is the software suite provided by Lutece to help you implement a wide range of digital services ready for deployment with your brand image.
+The services (RendezVous, Service'EZ, Particip'EZ) are developed on the Lutece platform, pre-assembled and containerized for easy deployment, and 100% open source.
+
+This repository holds the **Kubernetes** deployment of CiteLibre, described with https://www.yupiik.io/bundlebee/[Yupiik Bundlebee], and helper scripts to try it on a local Minikube.
+
+CiteLibre is split into three repositories:
+
+[cols="1,3"]
+|===
+| Repository | Content
+
+| https://github.com/citelibreorg/packaging[packaging]
+| Maven assembly of each service and Docker image build (Jib) - also describes the features of each service
+
+| https://github.com/citelibreorg/demo[demo]
+| Docker Compose stack to run the services locally and Cypress e2e tests
+
+| https://github.com/citelibreorg/ops[ops] (this one)
+| Kubernetes deployment descriptors (Yupiik Bundlebee) and Minikube helper scripts
+|===
+
+== 📁 Layout
+
+[cols="1,3"]
+|===
+| Path | Content
+
+| `pom.xml`
+| Bundlebee Maven plugin configuration
+
+| `bundlebee/manifest.json`, `bundlebee/manifests/`
+| Bundlebee manifests: the `citelibre` alveolus deploys the namespace, the shared platform and the applications
+
+| `bundlebee/kubernetes/`
+| Kubernetes descriptors (namespace, application and database templates, platform components)
+
+| `bundlebee/environments/default.properties`
+| Default placeholder values
+
+| `bundlebee/placeholders.descriptions.properties`
+| Description of each placeholder
+
+| `scripts/`
+| Minikube helper scripts
+|===
+
+== 🔧 Getting Started
+
+Pre-requisite: Apache Maven >= 3.6.3, Java >= 17 and a Kubernetes cluster reachable through your current kube context.
+
+Deploy the `citelibre` alveolus:
+
+[source,bash]
+----
+mvn -e bundlebee:apply@k8s [-Dbundlebee.debug=true] [-Ddeployment.alveolus=citelibre]
+----
+
+Delete it:
+
+[source,bash]
+----
+mvn -e bundlebee:delete@k8s [-Dbundlebee.debug=true] [-Ddeployment.alveolus=citelibre]
+----
+
+`-Dbundlebee.debug=true` enables dry-run and verbose mode.
+
+=== Local deployment with Minikube
+
+The `scripts/` directory wraps Minikube around the commands above:
+
+[source,bash]
+----
+./scripts/0_install.sh   # install minikube
+./scripts/1_start.sh     # start minikube with the metrics-server addon
+./scripts/2_status.sh    # minikube status
+./scripts/3_deploy.sh    # deploy the citelibre alveolus and open the dashboard
+./scripts/4_destroy.sh   # delete the citelibre alveolus
+./scripts/5_listPods.sh  # list pods and the URLs of the deployed services
+./scripts/6_stop.sh      # stop minikube
+./scripts/7_delete.sh    # delete the minikube cluster
+----
+
+The CiteLibre images are built from the https://github.com/citelibreorg/packaging[packaging] repository.
+
+== 📖 Documentation
+
+Comprehensive documentation is available at:
+
+🌐 https://citelibre.org
+
+== 🤝 Contributing
+
+We warmly welcome contributions!
+
+Please read the link:CONTRIBUTING.md[contribution guidelines] and the link:CODE_OF_CONDUCT.md[Code of Conduct] first, and report vulnerabilities as described in the link:SECURITY.md[Security Policy].
+
+- Fork the repository
+- Submit your enhancements via pull requests
+- Create https://github.com/citelibreorg/ops/issues[issues]
+- Open https://github.com/citelibreorg/ops/discussions[discussions]
+
+== 📜 License
+
+CiteLibre is released under the BSD 2-Clause License. See the LICENSE file for more details.
+
+== ©️ Copyright
+Copyright © 2025 CiteLibre.

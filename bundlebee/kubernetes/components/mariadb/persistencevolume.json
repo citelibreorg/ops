@@ -1,0 +1,31 @@
+{
+  "kind": "PersistentVolume",
+  "apiVersion": "v1",
+  "metadata": {
+    "name": "{{bundlebee-lowercase:{{database.name}}-volume}}",
+    "namespace": "{{namespace.name}}",
+    "labels": {
+      "app.kubernetes.io/name": "{{bundlebee-lowercase:{{database.name}}-volume}}",
+      "app.kubernetes.io/part-of": "{{project.name}}",
+      "app.kubernetes.io/managed-by": "bundlebee",
+      "deploy.by":"{{user.name:-unknown}}",
+      "deploy.at":"{{bundlebee.deploytime:-unset}}"
+    }
+  },
+  "spec": {
+    "storageClassName": "{{citelibre-mariadb.database.storage.class:-standard}}",
+    "capacity": {
+      "storage": "{{citelibre-mariadb.database.request.storage:-512Mi}}"
+    },
+    "accessModes": [
+      "{{citelibre-mariadb.database.accessMode:-ReadWriteOnce}}"
+    ],
+    "claimRef": {
+      "name": "{{bundlebee-lowercase:{{database.name}}-claim}}",
+      "namespace": "{{namespace.name}}"
+    },
+    "hostPath": {
+      "path": "{{citelibre-mariadb.database.persistencevolume.host.data.dir:-/opt/data/mariadb-local}}"
+    }
+  }
+}

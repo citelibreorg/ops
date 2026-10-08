@@ -1,0 +1,51 @@
+{
+  "$schema": "https://raw.githubusercontent.com/yupiik/bundlebee/gh-pages/generated/jsonschema/manifest.descriptor.json",
+  "interpolateAlveoli": true,
+  "alveoli": [
+    {
+      "name": "namespace",
+      "descriptors": [
+        {
+          "name": "namespace/namespace.json",
+          "await": true,
+          "awaitConditions": [
+            {
+              "command": "apply",
+              "conditions": [
+                {
+                  "type": "JSON_POINTER",
+                  "pointer": "/status/phase",
+                  "value": "Active"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "//type": "template",
+      "name": "application-template",
+      "descriptors": [
+        {
+          "name": "_template/application/deployment.json"
+        },
+        {
+          "name": "_template/application/service.json"
+        }
+      ]
+    },
+    {
+      "//type": "template",
+      "name": "database-template",
+      "descriptors": [
+        {
+          "name": "_template/database/statefulset.json"
+        },
+        {
+          "name": "_template/database/service.json"
+        }
+      ]
+    }
+  ]
+}
