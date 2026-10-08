@@ -6,4 +6,10 @@ PORT=${CITELIBRE_PORT:-8088}
 echo "CiteLibre available on http://localhost:$PORT (Ctrl+C to stop)"
 echo "- RendezVous back office: http://localhost:$PORT/citelibre-rendezvous/jsp/admin/AdminMenu.jsp"
 echo "- Keycloak:               http://localhost:$PORT/keycloak/admin/"
-kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller "$PORT":80
+# kubectl port-forward regularly drops ("lost connection to pod"): restart it
+trap 'exit 0' INT TERM
+while true; do
+  kubectl port-forward -n ingress-nginx svc/ingress-nginx-controller "$PORT":80
+  echo "port-forward stopped, restarting in 2s..."
+  sleep 2
+done

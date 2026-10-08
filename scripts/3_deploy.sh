@@ -12,4 +12,4 @@ done
 mvn -e bundlebee:apply@k8s || exit 1
 
 echo
-echo "Deployed. Run ./scripts/8_expose.sh then open http://localhost:8088/citelibre-rendezvous/jsp/admin/AdminMenu.jsp"
+echo "Deployed. Run ./scripts/4_expose.sh then open http://localhost:8088/citelibre-rendezvous/jsp/admin/AdminMenu.jsp"

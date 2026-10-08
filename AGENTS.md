@@ -31,10 +31,10 @@ CiteLibre is split into three sibling repositories (usually cloned side by side)
   (5 min in `pom.xml`: Keycloak first start, SQL imports).
 - Default placeholder values: `bundlebee/environments/default.properties` (local dev
   values, incl. the dev OAuth2 client secrets). Override with `-D<placeholder>=…`.
-- `scripts/0_install.sh` … `8_expose.sh` wrap minikube around these commands
-  (`3_deploy.sh` / `4_destroy.sh` cd to the repo root, they can be run from anywhere).
+- `scripts/0_install.sh` … `8_delete.sh` wrap minikube around these commands
+  (`3_deploy.sh` / `5_destroy.sh` cd to the repo root, they can be run from anywhere).
   `3_deploy.sh` loads the locally built images into minikube (`CITELIBRE_IMAGES`);
-  `8_expose.sh` port-forwards the ingress controller to `http://localhost:8088`.
+  `4_expose.sh` port-forwards the ingress controller to `http://localhost:8088`.
 - Images (`citelibre/citelibre-<app>`) are built in the `packaging` repo.
 
 ## Platform and applications

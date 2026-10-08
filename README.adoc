@@ -93,16 +93,16 @@ The `scripts/` directory wraps Minikube around the commands above:
 ./scripts/1_start.sh     # start minikube with the metrics-server and ingress addons
 ./scripts/2_status.sh    # minikube status
 ./scripts/3_deploy.sh    # load the local CiteLibre images into minikube and deploy the citelibre alveolus
-./scripts/8_expose.sh    # expose the ingress on http://localhost:8088 (keep it running)
-./scripts/4_destroy.sh   # delete the citelibre alveolus
-./scripts/5_listPods.sh  # list pods and the URLs of the deployed services
-./scripts/6_stop.sh      # stop minikube
-./scripts/7_delete.sh    # delete the minikube cluster
+./scripts/4_expose.sh    # expose the ingress on http://localhost:8088 (keep it running)
+./scripts/5_destroy.sh   # delete the citelibre alveolus
+./scripts/6_listPods.sh  # list pods and the URLs of the deployed services
+./scripts/7_stop.sh      # stop minikube
+./scripts/8_delete.sh    # delete the minikube cluster
 ----
 
 The CiteLibre images are built from the https://github.com/citelibreorg/packaging[packaging] repository (`mvn clean package -Passembly,rendezvous,docker`), then loaded into minikube by `3_deploy.sh`.
 
-The first deployment takes a few minutes (database imports, Keycloak first start). Then, with `8_expose.sh` running:
+The first deployment takes a few minutes (database imports, Keycloak first start). Then, with `4_expose.sh` running:
 
 - Back office at http://localhost:8088/citelibre-rendezvous/jsp/admin/AdminMenu.jsp : admin@citelibre.org/coucou
 - Front office at http://localhost:8088/citelibre-rendezvous/jsp/site/Portal.jsp : test@citelibre.org/coucou
