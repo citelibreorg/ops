@@ -104,8 +104,8 @@ The CiteLibre images (`citelibre/packaging-<app>`) are pulled from Docker Hub, w
 
 The first deployment takes a few minutes (database imports, Keycloak first start). Then, with `4_expose.sh` running:
 
-- Back office at http://localhost:8088/citelibre-rendezvous/jsp/admin/AdminMenu.jsp : admin@citelibre.org/coucou
-- Front office at http://localhost:8088/citelibre-rendezvous/jsp/site/Portal.jsp : test@citelibre.org/coucou
+- Back office at http://localhost:8088/citelibre-rendezvous/jsp/admin/AdminMenu.jsp : admin@citelibre.org/citelibre
+- Front office at http://localhost:8088/citelibre-rendezvous/jsp/site/Portal.jsp : test@citelibre.org/citelibre
 - Keycloak administration at http://localhost:8088/keycloak/admin/
 
 The applications must be reached on `http://localhost:<port>`: the Keycloak clients only allow `http://localhost*` redirect URIs. The port is the `citelibre.public.url` placeholder (`http://localhost:8088` by default).
