@@ -33,9 +33,11 @@ CiteLibre is split into three sibling repositories (usually cloned side by side)
   values, incl. the dev OAuth2 client secrets). Override with `-D<placeholder>=…`.
 - `scripts/0_install.sh` … `8_delete.sh` wrap minikube around these commands
   (`3_deploy.sh` / `5_destroy.sh` cd to the repo root, they can be run from anywhere).
-  `3_deploy.sh` loads the locally built images into minikube (`CITELIBRE_IMAGES`);
+  `3_deploy.sh` deploys the Docker Hub images, or first loads locally built images into
+  minikube when `CITELIBRE_IMAGES` is set;
   `4_expose.sh` port-forwards the ingress controller to `http://localhost:8088`.
-- Images (`citelibre/citelibre-<app>`) are built in the `packaging` repo.
+- Images (`citelibre/packaging-<app>`) are built in the `packaging` repo and published
+  on Docker Hub by its release workflow.
 
 ## Platform and applications
 

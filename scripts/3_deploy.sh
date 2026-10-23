@@ -1,10 +1,10 @@
 #!/bin/bash
 cd "$(dirname "$0")/.." || exit 1
 
-# CiteLibre images built locally (packaging repository) are not on a registry yet:
-# load them into minikube. Override the list with CITELIBRE_IMAGES.
-CITELIBRE_IMAGES=${CITELIBRE_IMAGES:-citelibre/citelibre-rendezvous:1.0.9}
-for image in $CITELIBRE_IMAGES; do
+# CiteLibre images are pulled from Docker Hub (citelibre/packaging-<app>). To test an
+# image built locally (packaging repository), load it into minikube with
+# CITELIBRE_IMAGES="citelibre/packaging-rendezvous:2.0.1" ./scripts/3_deploy.sh
+for image in ${CITELIBRE_IMAGES:-}; do
   echo "Loading $image into minikube"
   minikube image load "$image" || exit 1
 done

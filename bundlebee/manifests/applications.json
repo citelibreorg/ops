@@ -39,9 +39,9 @@
       "placeholders": {
         "application.name": "citelibre-rendezvous",
         "application.component": "citelibre-rendezvous",
-        "application.image.name": "{{citelibre.image.registry:-docker.io}}/citelibre/citelibre-rendezvous",
-        "application.image.version": "{{citelibre-rendezvous.version:-1.0.9}}",
-        "application.version": "{{citelibre-rendezvous.version:-1.0.9}}",
+        "application.image.name": "{{citelibre.image.registry:-docker.io}}/citelibre/packaging-rendezvous",
+        "application.image.version": "{{citelibre-rendezvous.version:-2.0.1}}",
+        "application.version": "{{citelibre-rendezvous.version:-2.0.1}}",
         "application.probes.readiness.path": "/citelibre-rendezvous/jsp/admin/AdminMessage.jsp",
         "application.probes.liveness.path": "/citelibre-rendezvous/jsp/admin/AdminMessage.jsp",
         "application.resources.requests.memory": "{{citelibre-rendezvous.resources.requests.memory:-1Gi}}",

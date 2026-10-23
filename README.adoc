@@ -92,7 +92,7 @@ The `scripts/` directory wraps Minikube around the commands above:
 ./scripts/0_install.sh   # install minikube
 ./scripts/1_start.sh     # start minikube with the metrics-server and ingress addons
 ./scripts/2_status.sh    # minikube status
-./scripts/3_deploy.sh    # load the local CiteLibre images into minikube and deploy the citelibre alveolus
+./scripts/3_deploy.sh    # deploy the citelibre alveolus
 ./scripts/4_expose.sh    # expose the ingress on http://localhost:8088 (keep it running)
 ./scripts/5_destroy.sh   # delete the citelibre alveolus
 ./scripts/6_listPods.sh  # list pods and the URLs of the deployed services
@@ -100,7 +100,7 @@ The `scripts/` directory wraps Minikube around the commands above:
 ./scripts/8_delete.sh    # delete the minikube cluster
 ----
 
-The CiteLibre images are built from the https://github.com/citelibreorg/packaging[packaging] repository (`mvn clean package -Passembly,rendezvous,docker`), then loaded into minikube by `3_deploy.sh`.
+The CiteLibre images (`citelibre/packaging-<app>`) are pulled from Docker Hub, where the https://github.com/citelibreorg/packaging[packaging] release workflow publishes them. To deploy an image built locally (`mvn clean package -Passembly,rendezvous,docker` in `packaging`), load it into minikube first: `CITELIBRE_IMAGES="citelibre/packaging-rendezvous:2.0.1" ./scripts/3_deploy.sh`.
 
 The first deployment takes a few minutes (database imports, Keycloak first start). Then, with `4_expose.sh` running:
 
